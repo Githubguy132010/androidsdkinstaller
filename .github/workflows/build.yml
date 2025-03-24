@@ -28,7 +28,7 @@ jobs:
           
       - name: Build with PyInstaller
         run: |
-          pyinstaller --name="AndroidSDKInstaller" --windowed --onefile --icon="icon.ico" main.py
+          pyinstaller --name="AndroidSDKInstaller" --windowed --onefile --icon="icon.ico" --manifest="installer.manifest" main.py
           
       - name: Create Release
         uses: softprops/action-gh-release@v1
