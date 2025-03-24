@@ -2,8 +2,24 @@ name: Build and Release
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - 'v*'
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # Every day at midnight UTC
+  release:
+    types: [created]
+  workflow_run:
+    workflows: ["Build and Release"]
+    types:
+      - completed
+  repository_dispatch:
+    types: [build] 
 
 jobs:
   build-windows:
