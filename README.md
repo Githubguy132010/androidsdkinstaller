@@ -1,65 +1,91 @@
 # Android SDK Platform Tools Installer
 
-A simple GUI installer for Android SDK Platform Tools that makes it easy to install ADB, Fastboot, and other Android platform tools on Windows.
+A user-friendly Windows GUI installer for Android SDK Platform Tools.
 
-## Features
+![Installer Screenshot](docs/installer_screenshot.png)
 
-- Easy-to-use graphical interface
-- Automatic download of the latest Android SDK Platform Tools
-- Option to add platform tools to system PATH
-- Silent installation support
-- Clean uninstallation option
-- Progress tracking during installation
+## Overview
+
+This installer provides a simple way to set up Android Platform Tools on Windows systems. It handles downloading, extracting, and configuring the platform tools with a modern, intuitive interface.
+
+### Features
+
+- **Modern UI**: Clean, Material Design-inspired interface
+- **Custom Installation Directory**: Choose where to install the platform tools
+- **PATH Integration**: Option to automatically add platform tools to system PATH
+- **Desktop Shortcut**: Create shortcuts for quick access
+- **Update Checking**: Verify and download the latest version
+- **Progress Tracking**: Visual feedback during installation
+- **Admin Privileges**: Properly handles system modifications
 
 ## Download
 
-Download the latest installer from the [Releases](../../releases) page.
+Download the latest version from the [Releases](https://github.com/yourusername/android-sdk-installer/releases) page.
+
+## Requirements
+
+- Windows 10 or newer
+- Administrator privileges (required for PATH modification)
+- Internet connection (for downloading platform tools)
 
 ## Usage
 
-1. Download the `AndroidSDKInstaller.exe` from the latest release
-2. Run the installer
-3. Choose your installation directory
-4. Select whether to add Platform Tools to your system PATH
-5. Click "Install" to complete the installation
+1. Download the installer executable from the Releases page
+2. Run the installer with administrator privileges
+3. Choose installation options
+4. Click "Install" to begin the installation process
+5. After completion, platform tools will be available in the installation directory
 
-After installation, you can use ADB, Fastboot, and other Android Platform Tools from any terminal window.
+### Common Tools Included
 
-## Building from Source
+- `adb` (Android Debug Bridge) - Manage Android devices
+- `fastboot` - Flash firmware to devices
+- `systrace` - System tracing utility
+
+## Development
 
 ### Prerequisites
 
-- Python 3.10 or higher
-- Required Python packages (install using `pip install -r requirements.txt`):
-  - requests
-  - tqdm
-  - python-dotenv
-  - pyinstaller
+- Visual Studio 2022 or newer
+- .NET 6.0 SDK
 
-### Build Steps
+### Building from Source
 
-1. Clone the repository
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Build the executable:
-   ```
-   pyinstaller --name="AndroidSDKInstaller" --windowed --onefile --icon="icon.ico" main.py
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/android-sdk-installer.git
 
-The built executable will be available in the `dist` directory.
+# Navigate to the project directory
+cd android-sdk-installer
 
-## License
+# Build the project
+dotnet build
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+# Run the application
+dotnet run
+```
+
+### Build the Installer
+
+```bash
+dotnet publish --configuration Release --self-contained -r win-x64 -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+```
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ## Acknowledgments
 
-- Android SDK Platform Tools by Google
-- PyInstaller for enabling executable creation
-- All contributors to this project
+- Android is a trademark of Google LLC
+- This project is not affiliated with Google or Android
