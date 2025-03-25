@@ -1,27 +1,24 @@
 from cx_Freeze import setup, Executable
-import PyQt5.QtCore
 
-# Function to get Qt paths
-def get_qt_paths():
-    try:
-        from cx_Freeze.hooks import qt_paths
-        return qt_paths()
-    except KeyError as e:
-        if str(e) == "'QmlImportsPath'":
-            return {}
-        raise
+# Define the executable and its properties
+exe = Executable(
+    script="installer.py",
+    base="Win32GUI",  # Use Win32GUI to suppress the console window
+    target_name="AndroidSDKInstaller.exe",  # Corrected parameter name
+    icon=None  # You can specify an icon file here
+)
 
-qt_paths = get_qt_paths()
-
-# Your existing setup code
+# Define the setup configuration
 setup(
-    name="Android SDK Installer",
+    name="Android SDK Platform Tools Installer",
     version="1.0",
-    description="Installer for Android SDK Platform Tools",
+    description="A GUI-based installer for Android SDK Platform Tools",
+    executables=[exe],
     options={
         "build_exe": {
-            "include_files": qt_paths.get("QmlImportsPath", ""),
+            "packages": ["os", "sys", "subprocess", "requests", "PyQt5"],
+            "include_files": [],  # Add any additional files needed for the installer
+            "include_msvcr": True  # Include Microsoft Visual C++ Redistributable files
         }
-    },
-    executables=[Executable("main.py")]
+    }
 )
