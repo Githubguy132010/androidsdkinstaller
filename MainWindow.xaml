@@ -1,4 +1,5 @@
-<![CDATA[<Window x:Class="AndroidSDKInstaller.MainWindow"
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="AndroidSDKInstaller.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Android SDK Platform Tools Installer" Height="600" Width="800"
@@ -90,4 +91,4 @@
                     Click="InstallButton_Click"/>
         </StackPanel>
     </Grid>
-</Window>]]>
+</Window>
