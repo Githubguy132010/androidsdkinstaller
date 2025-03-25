@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.13'
 
     - name: Install dependencies
       run: |
@@ -28,17 +28,17 @@ jobs:
       run: python setup.py build
 
     - name: Archive build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: android-sdk-installer
-        path: build/exe.win32-3.9/  # Adjust path based on your Python version and build output
+        path: build/exe.win32-3.13/  # Adjust path based on your Python version and build output
 
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Download build artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: android-sdk-installer
 
