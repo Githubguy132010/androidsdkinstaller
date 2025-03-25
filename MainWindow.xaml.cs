@@ -81,7 +81,7 @@ namespace AndroidSDKInstaller
 
                 if (CreateShortcutCheckBox.IsChecked == true)
                 {
-                    CreateDesktopShortcut();
+                    CreateDesktopShortcut(InstallationPath);
                 }
 
                 File.Delete(tempPath);
@@ -113,17 +113,24 @@ namespace AndroidSDKInstaller
             }
         }
 
-        private void CreateDesktopShortcut()
+        private void CreateDesktopShortcut(string install_path)
         {
-            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string shortcutPath = Path.Combine(desktopPath, "Platform Tools.lnk");
-
-            WshShell shell = new WshShell();
-            IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
-            shortcut.TargetPath = Path.Combine(InstallationPath, "adb.exe");
-            shortcut.WorkingDirectory = InstallationPath;
-            shortcut.Description = "Android Platform Tools";
-            shortcut.Save();
+            try
+            {
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string shortcutPath = Path.Combine(desktopPath, "Platform Tools.lnk");
+                
+                WshShell shell = new WshShell();
+                IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
+                shortcut.TargetPath = Path.Combine(install_path, "adb.exe");
+                shortcut.WorkingDirectory = install_path;
+                shortcut.Description = "Android Platform Tools";
+                shortcut.Save();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to create shortcut: {e.Message}");
+            }
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
