@@ -1,4 +1,10 @@
 from cx_Freeze import setup, Executable
+import os
+from PyQt5.QtCore import QLibraryInfo
+
+# Get the paths for Qt files
+qt_plugins_path = QLibraryInfo.location(QLibraryInfo.PluginsPath)
+qt_qml_path = QLibraryInfo.location(QLibraryInfo.Qml2ImportsPath)
 
 # Define the executable and its properties
 exe = Executable(
@@ -17,7 +23,10 @@ setup(
     options={
         "build_exe": {
             "packages": ["os", "sys", "subprocess", "requests", "PyQt5"],
-            "include_files": [],  # Add any additional files needed for the installer
+            "include_files": [
+                (qt_plugins_path, "plugins"),
+                (qt_qml_path, "qml")
+            ],  # Include Qt plugins and QML imports
             "include_msvcr": True  # Include Microsoft Visual C++ Redistributable files
         }
     }
