@@ -112,7 +112,7 @@ class AndroidSDKInstaller:
                 key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_ALL_ACCESS)
                 try:
                     current_path = winreg.QueryValueEx(key, "Path")[0]
-                except WindowsError:
+                except OSError:
                     current_path = ""
                 
                 if path not in current_path:
