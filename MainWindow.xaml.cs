@@ -43,7 +43,7 @@ namespace AndroidSDKInstaller
             {
                 InstallButton.IsEnabled = false;
                 StatusText.Text = "Downloading platform tools...";
-                
+
                 string tempPath = Path.Combine(Path.GetTempPath(), "platform-tools.zip");
                 using (var response = await httpClient.GetAsync(PLATFORM_TOOLS_URL, HttpCompletionOption.ResponseHeadersRead))
                 {
@@ -59,7 +59,7 @@ namespace AndroidSDKInstaller
                         {
                             await fileStream.WriteAsync(buffer, 0, bytesRead);
                             totalBytesRead += bytesRead;
-                            
+
                             if (totalBytes > 0)
                             {
                                 var progress = (double)totalBytesRead / totalBytes;
@@ -88,7 +88,7 @@ namespace AndroidSDKInstaller
                 StatusText.Text = "Installation completed successfully!";
                 InstallProgress.Value = 100;
                 ProgressText.Text = "100%";
-                
+
                 System.Windows.MessageBox.Show("Android Platform Tools have been successfully installed!", "Installation Complete", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -117,7 +117,7 @@ namespace AndroidSDKInstaller
         {
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string shortcutPath = Path.Combine(desktopPath, "Platform Tools.lnk");
-            
+
             WshShell shell = new WshShell();
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
             shortcut.TargetPath = Path.Combine(InstallationPath, "adb.exe");
@@ -132,7 +132,7 @@ namespace AndroidSDKInstaller
             {
                 dialog.Description = "Select Installation Directory";
                 dialog.SelectedPath = InstallationPath;
-                
+
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     InstallationPath = dialog.SelectedPath;
@@ -164,13 +164,4 @@ namespace AndroidSDKInstaller
             }
         }
     }
-}<ItemGroup>
-  <COMReference Include="IWshRuntimeLibrary">
-    <Guid>{F935DC21-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
-    <VersionMajor>1</VersionMajor>
-    <VersionMinor>0</VersionMinor>
-    <Lcid>0</Lcid>
-    <WrapperTool>primary</WrapperTool>
-    <Isolated>false</Isolated>
-  </COMReference>
-</ItemGroup>
+}
