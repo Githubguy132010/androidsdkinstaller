@@ -28,8 +28,8 @@ jobs:
       run: dotnet restore
       
     - name: Build
-      run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /p:Configuration=Release'
-      
+      run: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe /p:Configuration=Release'
+    
     - name: Publish
       run: dotnet publish --configuration Release --self-contained -r win-x64 -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./publish
     
