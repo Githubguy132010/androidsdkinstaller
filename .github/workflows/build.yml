@@ -26,9 +26,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
+      - name: Create icon
+        run: |
+          python create_icon.py
+          
       - name: Build with PyInstaller
         run: |
-          pyinstaller --name="AndroidSDKInstaller" --windowed --onefile --icon="icon.ico" --manifest="installer.manifest" main.py
+          pyinstaller installer.spec
           
       - name: Create Release
         uses: softprops/action-gh-release@v1
