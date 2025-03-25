@@ -54,34 +54,66 @@ class AndroidSDKInstaller:
             self.install_path.set(directory)
 
     def start_installation(self):
+        install_dir = self.install_path.get()
+        if not install_dir:
+            messagebox.showerror("Error", "Please select an installation directory")
+            return
+            
+        try:
+            # Create directory if it doesn't exist
+            os.makedirs(install_dir, exist_ok=True)
+            # Check if directory is writable
+            test_file = os.path.join(install_dir, "test_write")
+            try:
+                with open(test_file, 'w') as f:
+                    f.write("test")
+                os.remove(test_file)
+            except (IOError, OSError) as e:
+                messagebox.showerror("Error", f"Cannot write to selected directory: {str(e)}\nPlease run the installer with administrator privileges.")
+                return
+        except Exception as e:
+            messagebox.showerror("Error", f"Cannot create installation directory: {str(e)}")
+            return
+
         self.install_button.state(['disabled'])
         self.status_var.set("Starting installation...")
         Thread(target=self.install_platform_tools, daemon=True).start()
 
     def download_with_progress(self, url, destination):
-        response = requests.get(url, stream=True)
-        total_size = int(response.headers.get('content-length', 0))
-        block_size = 1024
-        
-        with open(destination, 'wb') as file, tqdm(
-                desc="Downloading",
-                total=total_size,
-                unit='iB',
-                unit_scale=True,
-                unit_divisor=1024,
-        ) as pbar:
-            for data in response.iter_content(block_size):
-                size = file.write(data)
-                pbar.update(size)
-                progress = (pbar.n / total_size) * 100
-                self.root.after(0, self.progress.configure, {'value': progress})
+        try:
+            response = requests.get(url, stream=True)
+            response.raise_for_status()  # Raise an error for bad status codes
+            total_size = int(response.headers.get('content-length', 0))
+            block_size = 1024
+            
+            # Ensure destination directory exists
+            os.makedirs(os.path.dirname(os.path.abspath(destination)), exist_ok=True)
+            
+            with open(destination, 'wb') as file, tqdm(
+                    desc="Downloading",
+                    total=total_size,
+                    unit='iB',
+                    unit_scale=True,
+                    unit_divisor=1024,
+            ) as pbar:
+                for data in response.iter_content(block_size):
+                    if data:  # Filter out keep-alive chunks
+                        size = file.write(data)
+                        pbar.update(size)
+                        progress = (pbar.n / total_size) * 100 if total_size > 0 else 0
+                        self.root.after(0, self.progress.configure, {'value': progress})
+        except Exception as e:
+            raise Exception(f"Download failed: {str(e)}")
 
     def add_to_system_path(self, path):
         try:
             if self.is_windows:
                 import winreg
                 key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_ALL_ACCESS)
-                current_path = winreg.QueryValueEx(key, "Path")[0]
+                try:
+                    current_path = winreg.QueryValueEx(key, "Path")[0]
+                except WindowsError:
+                    current_path = ""
                 
                 if path not in current_path:
                     new_path = current_path + ";" + path if current_path else path
@@ -94,26 +126,27 @@ class AndroidSDKInstaller:
                 if os.path.exists(os.path.expanduser("~/.zshrc")):
                     shell_rc = os.path.expanduser("~/.zshrc")
 
-                export_line = f'\nexport PATH="$PATH:{path}"'
-                with open(shell_rc, 'a+') as rc_file:
-                    rc_file.seek(0)
-                    if path not in rc_file.read():
-                        rc_file.write(export_line)
+                try:
+                    with open(shell_rc, 'a+') as rc_file:
+                        rc_file.seek(0)
+                        content = rc_file.read()
+                        if path not in content:
+                            export_line = f'\nexport PATH="$PATH:{path}"'
+                            rc_file.write(export_line)
+                except IOError as e:
+                    raise Exception(f"Failed to modify shell configuration: {str(e)}")
                 
                 # Also modify current session's PATH
                 os.environ['PATH'] = os.environ.get('PATH', '') + os.pathsep + path
             return True
         except Exception as e:
-            return False
+            raise Exception(f"Failed to add to PATH: {str(e)}")
 
     def install_platform_tools(self):
         try:
             install_dir = self.install_path.get()
             platform_tools_dir = os.path.join(install_dir, "platform-tools")
             zip_path = os.path.join(install_dir, "platform-tools.zip")
-
-            # Create directory if it doesn't exist
-            os.makedirs(install_dir, exist_ok=True)
 
             # Download platform-tools
             self.status_var.set("Downloading platform-tools...")
@@ -130,10 +163,16 @@ class AndroidSDKInstaller:
                 for root, dirs, files in os.walk(platform_tools_dir):
                     for file in files:
                         file_path = os.path.join(root, file)
-                        os.chmod(file_path, 0o755)
+                        try:
+                            os.chmod(file_path, 0o755)
+                        except OSError:
+                            pass  # Continue even if chmod fails
 
             # Clean up zip file
-            os.remove(zip_path)
+            try:
+                os.remove(zip_path)
+            except OSError:
+                pass  # Continue even if cleanup fails
 
             # Add to PATH if selected
             if self.add_to_path.get():
