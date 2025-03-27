@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ master ]
 
+# Voeg permissies toe voor het maken van releases
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     runs-on: windows-latest
