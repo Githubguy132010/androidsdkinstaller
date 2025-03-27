@@ -23,10 +23,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Download icon
+    - name: Create icon
       run: |
-        # Download een Android-icoon
-        Invoke-WebRequest -Uri "https://cdn.googlediscovery.com/wp-content/uploads/android-nova-marca-upscaled-1160x773.jpg" -OutFile "icon.ico"
+        # Maak een eenvoudig icoon met Pillow
+        python -c "
+        from PIL import Image, ImageDraw
+        img = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(img)
+        draw.ellipse([50, 50, 206, 206], fill='#3DDC84')
+        draw.ellipse([80, 80, 176, 176], fill='white')
+        img.save('icon.ico', format='ICO')
+        "
     
     - name: Build executable
       run: |
